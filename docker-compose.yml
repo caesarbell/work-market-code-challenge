@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  app:
+    container_name: questionnaire
+    build: .
+    command: npm start
+    ports:
+      - 8080:8080
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
