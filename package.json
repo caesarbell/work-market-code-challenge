@@ -19,7 +19,7 @@
     ]
   },
   "scripts": {
-    "precommit": "lint-staged",
+    "precommit": "lint-staged && npm test",
     "start": "PORT=8080 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
