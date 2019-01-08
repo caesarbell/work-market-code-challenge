@@ -3,8 +3,13 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ### Requirement 
 Docker
 
-### `Running the application`
+### `Running the application w/ Docker`
 When in your terminal and in the root of this project run `docker-compose up`
+Runs the app in the development mode.<br>
+Open [http://localhost:8080](http://localhost:8080) to view it in the browser.
+
+### `Running the application w/o Docker`
+When in your terminal and in the root of this project run `npm install && npm start`
 Runs the app in the development mode.<br>
 Open [http://localhost:8080](http://localhost:8080) to view it in the browser.
 

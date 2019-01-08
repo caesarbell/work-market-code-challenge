@@ -27,7 +27,6 @@ export const addItemToLocalStorage = (property, value) => {
 };
 
 export const removeItemsFromLocalStorage = property => {
-    console.log('property', property)
   delete window.localStorage[property];
 };
 

@@ -166,11 +166,11 @@ class Admin extends Component {
             name={
               clearedQuestions
                 ? 'Cleared'
-                : `Clear Questions (${
+                : `Clear Questions ${
                     retrieveQuestionsFromLocalStorage()
-                      ? retrieveQuestionsFromLocalStorage().length
+                      ? `(${retrieveQuestionsFromLocalStorage().length})`
                       : ''
-                  })`
+                  }`
             }
             value="questions"
             onClick={this.onClearStorage}
@@ -179,11 +179,11 @@ class Admin extends Component {
             name={
               clearedAnswers
                 ? 'Cleared'
-                : `Clear Submissions (${
+                : `Clear Submissions ${
                     retrieveAnwsersFromLocalStorage()
-                      ? retrieveAnwsersFromLocalStorage().length
+                      ? `(${retrieveAnwsersFromLocalStorage().length})`
                       : ''
-                  })`
+                  }`
             }
             value="results"
             onClick={this.onClearStorage}
