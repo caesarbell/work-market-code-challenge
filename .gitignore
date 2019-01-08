@@ -1,2 +1,10 @@
-node_modules
+# dependencies
+/node_modules 
+package-lock.json 
+
+# misc
 .DS_Store
+.env
+**/.DS_Store
+.dockervolumes
+.dockervolumes

@@ -1,26 +1,39 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from 'react-router-dom';
+import { Provider } from 'react-redux';
+import store from './redux/store/store';
 import './App.css';
+import Questionnaire from './Components/layouts/Questionnaire';
+import Admin from './Components/layouts/Admin';
+import Results from './Components/layouts/Results';
+import { getLocalStorageUser } from './jobs/storage/localStore';
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <Provider store={store}>
+        <Router>
+          <div className="container">
+            <Switch>
+              <Route exact path="/" component={Questionnaire} />
+              <Route exact path="/poll" component={Questionnaire} />
+              <Route
+                exact
+                path="/admin"
+                render={() =>
+                  getLocalStorageUser() ? <Admin /> : <Redirect to="/" />
+                }
+              />
+              <Route exact path="/results" component={Results} />
+            </Switch>
+          </div>
+        </Router>
+      </Provider>
     );
   }
 }
