@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 import AdminTextBlock from '../admin/AdminTextBlock';
 import PropTypes from 'prop-types';
 import { updateData, clearQuestions } from '.././../redux/actions/questions';
@@ -9,14 +9,14 @@ import AdminSubmitButtons from '../admin/AdminSubmitButtons';
 import {
   removeItemsFromLocalStorage,
   retrieveQuestionsFromLocalStorage,
-  retrieveAnwsersFromLocalStorage
+  retrieveAnwsersFromLocalStorage,
 } from '../../jobs/storage/localStore';
 
 class Admin extends Component {
   static propTypes = {
     updateData: PropTypes.func.isRequired,
     questions: PropTypes.object.isRequired,
-      clearQuestions: PropTypes.func.isRequired,
+    clearQuestions: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -27,7 +27,7 @@ class Admin extends Component {
       answers: [],
       submitted: false,
       clearedQuestions: false,
-      clearedAnswers: false
+      clearedAnswers: false,
     };
 
     this.onEnterQuestion = this.onEnterQuestion.bind(this);
@@ -42,7 +42,7 @@ class Admin extends Component {
       question: e.target.value,
       submitted: false,
       clearedAnswers: false,
-      clearedQuestions: false
+      clearedQuestions: false,
     });
   }
 
@@ -54,13 +54,13 @@ class Admin extends Component {
       answers,
       submitted: false,
       clearedAnswers: false,
-      clearedQuestions: false
+      clearedQuestions: false,
     });
   }
 
   onSignOut() {
-      removeItemsFromLocalStorage('user');
-      window.location.href = '/';
+    removeItemsFromLocalStorage('user');
+    window.location.href = '/';
   }
 
   onSubmit() {
@@ -80,11 +80,11 @@ class Admin extends Component {
   }
 
   onClearStorage(e) {
-    let clear; 
-    const { clearQuestions } = this.props; 
+    let clear;
+    const { clearQuestions } = this.props;
 
     switch (e.target.value) {
-    case 'questions':
+      case 'questions':
         clear = 'clearedQuestions';
         break;
       case 'results':
@@ -94,11 +94,11 @@ class Admin extends Component {
         break;
     }
 
-    clearQuestions(e.target.value)
+    clearQuestions(e.target.value);
 
     this.setState({
-        [clear] : true
-    })
+      [clear]: true,
+    });
   }
 
   render() {
@@ -163,21 +163,40 @@ class Admin extends Component {
         <div className="mb-4">
           <AdminSubmitButtons name={submit} onClick={this.onSubmit} />
           <AdminSubmitButtons
-            name={clearedQuestions ? 'Cleared' : `Clear Questions ${retrieveQuestionsFromLocalStorage() ? retrieveQuestionsFromLocalStorage().length : ''}`}
+            name={
+              clearedQuestions
+                ? 'Cleared'
+                : `Clear Questions (${
+                    retrieveQuestionsFromLocalStorage()
+                      ? retrieveQuestionsFromLocalStorage().length
+                      : ''
+                  })`
+            }
             value="questions"
             onClick={this.onClearStorage}
           />
           <AdminSubmitButtons
-            name={clearedAnswers ? 'Cleared' : `Clear Submissions ${retrieveAnwsersFromLocalStorage() ? retrieveAnwsersFromLocalStorage().length : ''}`}
+            name={
+              clearedAnswers
+                ? 'Cleared'
+                : `Clear Submissions (${
+                    retrieveAnwsersFromLocalStorage()
+                      ? retrieveAnwsersFromLocalStorage().length
+                      : ''
+                  })`
+            }
             value="results"
             onClick={this.onClearStorage}
           />
         </div>
-        <small style={{ paddingBottom: '30px'}}>
+        <small style={{ paddingBottom: '30px' }}>
           Submmit questions and answers and if you want to see your questions
           click {''}
         </small>
-            <Link style={{ fontSize: '13px'}} to="/poll"> here</Link>
+        <Link style={{ fontSize: '13px' }} to="/poll">
+          {' '}
+          here
+        </Link>
       </div>
     );
   }
@@ -189,7 +208,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   updateData,
-  clearQuestions
+  clearQuestions,
 };
 
 export default connect(

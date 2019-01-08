@@ -81,8 +81,6 @@ class Questionnaire extends Component {
     const { submitted, modal } = this.state;
     const { data, loading, selectedAnswers } = this.props.questions;
     const { user, error, loadingUser } = this.props.user;
-    const warning =
-      data.length >= 6 ? 'Maximum limited reached for questions' : '';
     let content;
 
     if (loading) {
@@ -105,17 +103,13 @@ class Questionnaire extends Component {
       content = data.map((value, index) => {
         const question = value.question;
         const answers = value.answers;
-        return index >= 6 ? (
-          <div />
-        ) : (
-          <QuestionBlocks
-            key={index}
-            number={index}
-            selectedAnswer={selectedAnswers}
-            question={question}
-            answers={answers}
-          />
-        );
+        return <QuestionBlocks
+          key={index}
+          number={index}
+          selectedAnswer={selectedAnswers}
+          question={question}
+          answers={answers}
+        />
       });
     }
 
@@ -157,7 +151,7 @@ class Questionnaire extends Component {
         <div style={{ marginTop: '50px' }}>
           {content}
           <Button
-            className={`mt-4 border-0 ${
+            className={`my-4 border-0 d-block ${
               selectedAnswers.length >= 1 &&
               data.length === selectedAnswers.length
                 ? 'bg-info'
@@ -173,7 +167,6 @@ class Questionnaire extends Component {
           >
             {submitted ? 'Submitted' : 'Submit'}
           </Button>
-          <p className="mt-4 text-danger font-weight-bold">{warning}</p>
           {(() => {
             if (loading) {
               return <div />;
@@ -183,7 +176,7 @@ class Questionnaire extends Component {
             ) {
               return (
                 <Button
-                  className="bg-info text-white p-2 rounded text-uppercase border-0"
+                  className="d-block bg-info text-white p-2 rounded text-uppercase border-0"
                   onClick={this.onShowResults}
                 >
                   Show Results
