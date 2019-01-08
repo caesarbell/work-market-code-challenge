@@ -4,7 +4,6 @@ import AnswerBlock from '../answer/AnswerBlock';
 
 const QuestionBlocks = props => {
     const { question, number, answers, selectedAnswer } = props;
-    console.log('selectedAnswer', selectedAnswer);
     let checked; 
 
     return <div style={{ width: '400px' }}>

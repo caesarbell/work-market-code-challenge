@@ -4,27 +4,30 @@ import {
   RETRIEVE_VALUE,
   UPDATE_DATA,
   PENDING,
+  CLEAR_QUESTIONS,
+  CLEAR_ANSWERS
 } from './types';
 import {
   retrieveQuestionsFromLocalStorage,
-  addItemToLocalStorage
+  addItemToLocalStorage,
+  removeItemsFromLocalStorage
 } from '../../jobs/storage/localStore';
 import axios from '../../axios/axios';
 
-const url = retrieveQuestionsFromLocalStorage();
-console.log('url', url);
-
 export const retrieveData = () => dispatch => {
+    const url = retrieveQuestionsFromLocalStorage();
 
     dispatch({
         type: LOADING
     });
 
-    if(url) {
-        axios(url).then(res => {
+    axios(url).then(res => {
+        if (res) {
             dispatch({ type: GET_DATA, payload: res });
-        });
-    }
+        } else if(url === undefined || url === null) {
+            dispatch({ type: GET_DATA, payload: [] });
+        }
+    });
 
 };
 
@@ -39,6 +42,7 @@ export const selectAnswer = value => dispatch => {
 
 
 export const updateData = newData => dispatch => {
+    const url = retrieveQuestionsFromLocalStorage();
 
     dispatch({
         type: PENDING
@@ -56,4 +60,13 @@ export const updateData = newData => dispatch => {
             dispatch({ type: UPDATE_DATA, payload: res})
         })
 
+}
+
+export const clearQuestions = property => dispatch => {
+    removeItemsFromLocalStorage(property)
+    if(property === 'questions') {
+        dispatch({ type: CLEAR_QUESTIONS, payload: [] });
+    } else if(property === 'results') {
+        dispatch({ type: CLEAR_ANSWERS, payload: [] });
+    }
 }

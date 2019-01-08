@@ -1,8 +1,17 @@
 import React, { Component } from 'react';
-import { Form, FormGroup, Input, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import {
+  Form,
+  FormGroup,
+  Input,
+  Label,
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+} from 'reactstrap';
 import { getUser } from '../../redux/actions/user';
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 class ModalSignIn extends Component {
   constructor(props) {
@@ -10,19 +19,20 @@ class ModalSignIn extends Component {
 
     this.state = {
       username: '',
-      password: ''
-    }
+      password: '',
+    };
 
     this.toggle = this.toggle.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
   static propTypes = {
     user: PropTypes.object.isRequired,
     getUser: PropTypes.func.isRequired,
     isOpen: PropTypes.bool.isRequired,
-    toggle: PropTypes.func.isRequired
-  }
+    toggle: PropTypes.func.isRequired,
+  };
 
   toggle() {
     this.props.toggle();
@@ -30,58 +40,57 @@ class ModalSignIn extends Component {
 
   onChange(e) {
     this.setState({
-      [e.target.name] : e.target.value
-    })
+      [e.target.name]: e.target.value,
+    });
+  }
+
+  onSubmit(e) {
+    e.preventDefault();
+    const { username, password } = this.state;
+    const { toggle, getUser } = this.props;
+
+    getUser({
+      username,
+      password,
+    });
+    toggle();
   }
 
   render() {
-    const { isOpen, toggle, getUser } = this.props;
-    const { username, password } = this.state; 
-    return (
-      <div>
-        <Modal
-          isOpen={isOpen}
-          toggle={this.toggle}
-        >
-          <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
+    const { isOpen } = this.props;
+    const { username, password } = this.state;
+    return <div>
+        <Modal isOpen={isOpen} toggle={this.toggle}>
+          <ModalHeader toggle={this.toggle}>Sign In</ModalHeader>
           <ModalBody>
-            <Form>
+            <Form onSubmit={this.onSubmit}>
               <FormGroup>
                 <Label for="username">Username</Label>
-                <Input type="text" name="username" id="username" placeholder="johndoe" value={username} onChange={this.onChange} />
+                <Input type="text" name="username" id="username" placeholder="johndoe" value={username} onChange={this.onChange} required />
               </FormGroup>
               <FormGroup>
                 <Label for="password">Password</Label>
-                <Input type="password" name="password" id="password" placeholder="***" value={password} onChange={this.onChange} />
+                <Input type="password" name="password" id="password" placeholder="***" value={password} onChange={this.onChange} required />
               </FormGroup>
+              <Button type="submit" color="primary">
+                Sign In
+              </Button>
             </Form>
           </ModalBody>
-          <ModalFooter>
-            <Button color="primary" onClick={() => {
-              getUser({
-                username,
-                password
-              });
-              toggle();
-            }}>
-              Sign In
-            </Button>
-          </ModalFooter>
         </Modal>
-      </div>
-    );
+      </div>;
   }
 }
 
 const mapStateToProps = state => ({
-  user: state.user
+  user: state.user,
 });
 
 const mapDispatchToProps = {
-  getUser
-}
+  getUser,
+};
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ModalSignIn)
+)(ModalSignIn);

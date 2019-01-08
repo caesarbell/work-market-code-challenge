@@ -1,13 +1,16 @@
-import { USER, ERROR } from './types'
+import { USER, ERROR, LOADING_USER } from './types'
 import { user } from '../../mock/data'
 import axios from '../../axios/axios'
 import { setUser, getLocalStorageUser } from '../../jobs/storage/localStore'
 
 export const getUser = signedInUser => dispatch => {
+    
+    dispatch({
+        type: LOADING_USER
+    })
+
     axios(user)
         .then(res => {
-            console.log('res', res);
-            console.log('signed in user', signedInUser);
             if(res.username === signedInUser.username && res.password === signedInUser.password) {
                 setUser(signedInUser);
                 dispatch({

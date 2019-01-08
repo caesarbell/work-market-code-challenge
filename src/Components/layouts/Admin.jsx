@@ -1,16 +1,22 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
+import { Link } from 'react-router-dom'
 import AdminTextBlock from '../admin/AdminTextBlock';
 import PropTypes from 'prop-types';
-import { updateData } from '.././../redux/actions/questions';
+import { updateData, clearQuestions } from '.././../redux/actions/questions';
 import { connect } from 'react-redux';
 import AdminSubmitButtons from '../admin/AdminSubmitButtons';
-import { removeItemsFromLocalStorage } from '../../jobs/storage/localStore';
+import {
+  removeItemsFromLocalStorage,
+  retrieveQuestionsFromLocalStorage,
+  retrieveAnwsersFromLocalStorage
+} from '../../jobs/storage/localStore';
 
 class Admin extends Component {
   static propTypes = {
     updateData: PropTypes.func.isRequired,
     questions: PropTypes.object.isRequired,
+      clearQuestions: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -74,23 +80,21 @@ class Admin extends Component {
   }
 
   onClearStorage(e) {
-    let property;
     let clear; 
+    const { clearQuestions } = this.props; 
 
-    switch (e.target.name) {
-      case 'Clear Questions':
-        property = 'questions';
+    switch (e.target.value) {
+    case 'questions':
         clear = 'clearedQuestions';
         break;
-      case 'Clear Answers':
-        property = 'results';
+      case 'results':
         clear = 'clearedAnswers';
         break;
       default:
         break;
     }
 
-    removeItemsFromLocalStorage(property);
+    clearQuestions(e.target.value)
 
     this.setState({
         [clear] : true
@@ -156,27 +160,24 @@ class Admin extends Component {
           </div>
         </div>
 
-        <div>
+        <div className="mb-4">
           <AdminSubmitButtons name={submit} onClick={this.onSubmit} />
           <AdminSubmitButtons
-            name={clearedQuestions ? 'Cleared' : 'Clear Questions'}
+            name={clearedQuestions ? 'Cleared' : `Clear Questions ${retrieveQuestionsFromLocalStorage() ? retrieveQuestionsFromLocalStorage().length : ''}`}
+            value="questions"
             onClick={this.onClearStorage}
           />
           <AdminSubmitButtons
-            name={clearedAnswers ? 'Cleared' : 'Clear Answers'}
+            name={clearedAnswers ? 'Cleared' : `Clear Submissions ${retrieveAnwsersFromLocalStorage() ? retrieveAnwsersFromLocalStorage().length : ''}`}
+            value="results"
             onClick={this.onClearStorage}
           />
         </div>
-        <small>
+        <small style={{ paddingBottom: '30px'}}>
           Submmit questions and answers and if you want to see your questions
           click {''}
-          <Button
-            className="border-0  bg-transparent text-primary p-0"
-            onClick={() => (window.location.href = '/poll')}
-          >
-            here
-          </Button>
         </small>
+            <Link style={{ fontSize: '13px'}} to="/poll"> here</Link>
       </div>
     );
   }
@@ -188,6 +189,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   updateData,
+  clearQuestions
 };
 
 export default connect(

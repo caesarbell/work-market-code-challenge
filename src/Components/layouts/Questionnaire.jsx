@@ -9,6 +9,7 @@ import QuestionBlocks from '../questions/QuestionBlocks';
 import {
   isLocalStorageEnable,
   addItemToLocalStorage,
+  retrieveAnwsersFromLocalStorage,
 } from '../../jobs/storage/localStore';
 import ModalSignIn from '../modal/ModalSignIn';
 
@@ -29,6 +30,7 @@ class Questionnaire extends Component {
     this.onSubmit = this.onSubmit.bind(this);
     this.toggle = this.toggle.bind(this);
     this.onSignIn = this.onSignIn.bind(this);
+    this.onShowResults = this.onShowResults.bind(this);
   }
   componentDidMount() {
     const { retrieveData, isUserSignedIn } = this.props;
@@ -39,9 +41,8 @@ class Questionnaire extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.questions.data.length !== this.props.questions.data.length) {
-      console.log('props has changed');
-
       const { data } = this.props.questions;
+      console.log('data', data);
       if (isLocalStorageEnable) {
         addItemToLocalStorage('questions', data);
       }
@@ -69,15 +70,54 @@ class Questionnaire extends Component {
     });
   }
 
+  onShowResults() {
+    window.location.href = '/results';
+    this.setState({
+      submitted: false,
+    });
+  }
+
   render() {
-    console.log('props', this.props);
     const { submitted, modal } = this.state;
     const { data, loading, selectedAnswers } = this.props.questions;
-    const { user, error } = this.props.user;
-    console.log('selected answers length', selectedAnswers.length);
-    console.log('data length', data.length);
+    const { user, error, loadingUser } = this.props.user;
     const warning =
       data.length >= 6 ? 'Maximum limited reached for questions' : '';
+    let content;
+
+    if (loading) {
+      content = (
+        <div>
+          <h2>Loading...</h2>
+        </div>
+      );
+    } else if (data.length < 1) {
+      content = (
+        <p>
+          Opps... there seems to be no questions at this time,{' '}
+          {user.hasOwnProperty('username')
+            ? 'click on your avatar and add some'
+            : 'sign in and add some'}
+          .
+        </p>
+      );
+    } else {
+      content = data.map((value, index) => {
+        const question = value.question;
+        const answers = value.answers;
+        return index >= 6 ? (
+          <div />
+        ) : (
+          <QuestionBlocks
+            key={index}
+            number={index}
+            selectedAnswer={selectedAnswers}
+            question={question}
+            answers={answers}
+          />
+        );
+      });
+    }
 
     return (
       <div>
@@ -103,7 +143,7 @@ class Questionnaire extends Component {
                   className="text-white rounded bg-dark border-0 mt-2 px-2"
                   onClick={this.onSignIn}
                 >
-                  Sign in
+                  {loadingUser ? 'Loading...' : 'Sign In'}
                 </button>
               )}
               <p className="text-danger" style={{ fontSize: '8px' }}>
@@ -115,34 +155,7 @@ class Questionnaire extends Component {
         </div>
         <div />
         <div style={{ marginTop: '50px' }}>
-          {loading ? (
-            <div>
-              <h2>Loading...</h2>
-              <p>
-                Opps... there seems to be no questions at this time,{' '}
-                {user.hasOwnProperty('username')
-                  ? 'click on your avatar and add some'
-                  : 'sign in and add some'}
-                .
-              </p>
-            </div>
-          ) : (
-            data.map((value, index) => {
-              const question = value.question;
-              const answers = value.answers;
-              return index >= 6 ? (
-                <div />
-              ) : (
-                <QuestionBlocks
-                  key={index}
-                  number={index}
-                  selectedAnswer={selectedAnswers}
-                  question={question}
-                  answers={answers}
-                />
-              );
-            })
-          )}
+          {content}
           <Button
             className={`mt-4 border-0 ${
               selectedAnswers.length >= 1 &&
@@ -161,16 +174,23 @@ class Questionnaire extends Component {
             {submitted ? 'Submitted' : 'Submit'}
           </Button>
           <p className="mt-4 text-danger font-weight-bold">{warning}</p>
-          {submitted ? (
-            <Link
-              to="/results"
-              className="bg-info text-white p-2 rounded text-uppercase border-0"
-            >
-              Show Results
-            </Link>
-          ) : (
-            <div />
-          )}
+          {(() => {
+            if (loading) {
+              return <div />;
+            } else if (
+              submitted ||
+              retrieveAnwsersFromLocalStorage()
+            ) {
+              return (
+                <Button
+                  className="bg-info text-white p-2 rounded text-uppercase border-0"
+                  onClick={this.onShowResults}
+                >
+                  Show Results
+                </Button>
+              );
+            }
+          })()}
         </div>
         <ModalSignIn isOpen={modal} toggle={this.toggle} />
       </div>

@@ -29,7 +29,7 @@ const AdminTextBlock = ({
 AdminTextBlock.propTypes = {
     type: PropTypes.string,
     maxLength: PropTypes.string,
-    style: PropTypes.object.isRequired,
+    style: PropTypes.object,
     onChange: PropTypes.func.isRequired,
     name: PropTypes.string,
     placeholder: PropTypes.string,
@@ -41,7 +41,8 @@ AdminTextBlock.defaultProps = {
     maxLength: "140",
     name: '',
     placeholder: 'Enter your question here',
-    value: ''
+    value: '',
+    style: {}
 }
 
 export default AdminTextBlock
